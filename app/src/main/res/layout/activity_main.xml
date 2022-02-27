@@ -145,8 +145,9 @@
         android:id="@+id/textToExplainIncident"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="150dp"
         android:layout_marginStart="10dp"
+        android:layout_marginTop="150dp"
+        android:fontFamily="@font/fredokam2"
         android:text="@string/explain_the_incident"
         android:textColor="@color/black"
         android:textSize="20sp" />
@@ -162,8 +163,10 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/layoutforedittext"
+            android:fontFamily="@font/fredokam2"
             android:gravity="top"
             android:hint="Explain about the incident and add any information about it...."
+            android:inputType="textCapSentences|textMultiLine"
             android:padding="10dp"
             android:textColor="@color/black"
             android:textColorHint="#b2babb" />

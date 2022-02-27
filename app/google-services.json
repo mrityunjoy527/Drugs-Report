@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "454497760598",
+    "project_id": "drugs-report",
+    "storage_bucket": "drugs-report.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:454497760598:android:3cb305697274e16ee1d2f7",
+        "android_client_info": {
+          "package_name": "com.example.stopdrugs"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "454497760598-8smthdubkvsu044s40jio4artun76h8j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDzKbXM0dIQd_h69MxM21qh7UAV_B4vRmE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "454497760598-8smthdubkvsu044s40jio4artun76h8j.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
