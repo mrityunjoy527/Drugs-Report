@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Stop Drugs</string>
+    <string name="report">Report</string>
+    <string name="explain_the_incident">Explain the Incident</string>
+</resources>

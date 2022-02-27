@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".MainActivity">
+
+    <LinearLayout
+        android:id="@+id/layoutOfCamVideo"
+        android:layout_width="wrap_content"
+        android:layout_height="100dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_toStartOf="@id/layoutForReport"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:id="@+id/layoutForVideo"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/layoutbg">
+
+            <ImageView
+                android:id="@+id/video"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="10dp"
+                android:src="@drawable/video" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/layoutForCamera"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/layoutbg">
+
+            <ImageView
+                android:id="@+id/camera"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="10dp"
+                android:src="@drawable/camera" />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="130dp"
+        android:layout_height="130dp"
+        android:layout_marginBottom="20dp"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/layoutForReport"
+        app:cardCornerRadius="130dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/layoutforreportbg"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:src="@drawable/hotspot"
+                android:layout_marginTop="10dp"
+                android:layout_height="65dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="75dp"
+                android:text="@string/report"
+                android:textAlignment="center"
+                android:textSize="25sp"
+                android:layout_marginTop="-10dp"
+                android:textStyle="bold"
+                android:textColor="@color/white"/>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <LinearLayout
+        android:id="@+id/layoutOfOthersRecording"
+        android:layout_width="wrap_content"
+        android:layout_height="100dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_toEndOf="@id/layoutForReport"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:id="@+id/layoutForMic"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:layout_weight="1"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/layoutbg">
+
+            <ImageView
+                android:id="@+id/mic"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:padding="10dp"
+                android:src="@drawable/mic" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/layoutForOther"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:layout_weight="1"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/layoutbg">
+
+            <ImageView
+                android:id="@+id/add"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:padding="10dp"
+                android:src="@drawable/addition" />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/lineAboveLayout"
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:layout_above="@id/layoutOfOthersRecording"
+        android:background="@drawable/layoutbg" />
+
+    <TextView
+        android:id="@+id/textToExplainIncident"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="150dp"
+        android:layout_marginStart="10dp"
+        android:text="@string/explain_the_incident"
+        android:textColor="@color/black"
+        android:textSize="20sp" />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="300dp"
+        android:layout_below="@id/textToExplainIncident"
+        android:layout_margin="10dp">
+
+        <EditText
+            android:id="@+id/textInput"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/layoutforedittext"
+            android:gravity="top"
+            android:hint="Explain about the incident and add any information about it...."
+            android:padding="10dp"
+            android:textColor="@color/black"
+            android:textColorHint="#b2babb" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/layoutForBell"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="15dp"
+        android:background="@drawable/layoutforbell">
+
+        <ImageView
+            android:id="@+id/bell"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:padding="10dp"
+            android:src="@drawable/bell" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/layoutForTracking"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_margin="15dp"
+        android:background="@drawable/layoutforbell">
+
+        <ImageView
+            android:id="@+id/tracking"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:padding="10dp"
+            android:src="@drawable/tracking" />
+    </RelativeLayout>
+
+</RelativeLayout>
