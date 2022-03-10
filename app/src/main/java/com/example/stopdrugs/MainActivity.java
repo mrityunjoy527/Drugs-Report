@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
             Bitmap bitmap = (Bitmap) data.getExtras().get("data");
             Uri uri = getImageUri(getApplicationContext(), bitmap);
             File file = new File(getRealPathFromURI(uri));
-            System.out.println(uri);
+            System.out.println(file);
         }
     }
     public Uri getImageUri(Context inContext, Bitmap inImage) {
