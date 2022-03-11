@@ -204,5 +204,4 @@
             android:padding="10dp"
             android:src="@drawable/tracking" />
     </RelativeLayout>
-
 </RelativeLayout>
