@@ -18,6 +18,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -28,6 +29,7 @@ import android.view.View;
 import android.view.autofill.AutofillId;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -49,8 +51,9 @@ public class MainActivity extends AppCompatActivity {
     public static final int REC_VIDEO = 100;
     public static final int CHECK_CAM = 101;
     ImageView camera, video, mic, others;
+    TextView reportText;
     CardView report;
-    String imagePath, videoPath;
+    String imagePath, videoPath, micPath;
     String aboutIncident;
     Bitmap imageBitmap;
     Uri uriImage, uriVideo, uriAudio;
@@ -59,41 +62,61 @@ public class MainActivity extends AppCompatActivity {
     FirebaseStorage firebaseStorage;
     StorageReference storageReference;
     String imageAccessToken;
+    static int imageCnt = 0, videoCnt = 0, micCnt = 0;
+    TextView camCount, videoCount, micCount;
     Bitmap bitmap;
+    Intent intent;
+    AudioRec audioRec;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         camera = findViewById(R.id.camera);
+        reportText = findViewById(R.id.reportText);
         video = findViewById(R.id.video);
         mic = findViewById(R.id.mic);
+        camCount = findViewById(R.id.camCount);
+        videoCount = findViewById(R.id.videoCount);
+        micCount = findViewById(R.id.micCount);
         others = findViewById(R.id.add);
         report = findViewById(R.id.layoutForReport);
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseFirestore = FirebaseFirestore.getInstance();
         firebaseStorage = FirebaseStorage.getInstance();
         storageReference = firebaseStorage.getReference();
+        intent = getIntent();
+        micPath = intent.getStringExtra("audioPath");
+        micCnt = intent.getIntExtra("micCnt", 0);
+        if(micPath != null && micCnt > 0) {
+            micCount.setText(micCnt+"");
+            report.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.layoutforreportbg));
+            reportText.setTextColor(Color.WHITE);
+        }
         report.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
-                dialog.setMessage("Do you want to report ?");
-                dialog.setTitle("Submit report");
-                dialog.setCancelable(false);
-                dialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        Toast.makeText(getApplicationContext(), "Report Submitted", Toast.LENGTH_SHORT).show();
-                    }
-                });
-                dialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        Toast.makeText(getApplicationContext(), "Not want to report", Toast.LENGTH_SHORT).show();
-                    }
-                });
-                dialog.create().show();
+                if(uriImage != null || uriVideo != null || uriAudio != null) {
+                    AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
+                    dialog.setMessage("Do you want to report ?");
+                    dialog.setTitle("Submit report");
+                    dialog.setCancelable(false);
+                    dialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            Toast.makeText(getApplicationContext(), "Report Submitted", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    dialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            Toast.makeText(getApplicationContext(), "Not want to report", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    dialog.create().show();
+                }else {
+                    Toast.makeText(getApplicationContext(), "Evidence Incomplete", Toast.LENGTH_SHORT).show();
+                }
             }
         });
         camera.setOnClickListener(new View.OnClickListener() {
@@ -105,7 +128,10 @@ public class MainActivity extends AppCompatActivity {
         mic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this, AudioRec.class));
+                Intent intent = new Intent(MainActivity.this, AudioRec.class);
+                intent.putExtra("micCnt", micCnt);
+                startActivity(intent);
+                finish();
             }
         });
         video.setOnClickListener(new View.OnClickListener() {
@@ -160,11 +186,25 @@ public class MainActivity extends AppCompatActivity {
         if(requestCode == CHECK_CAM && resultCode == RESULT_OK) {
             imageBitmap = (Bitmap) data.getExtras().get("data");
             uriImage = getImageUri(getApplicationContext(), imageBitmap);
-            File finalFile = new File(getRealPathFromURI(uriImage));
+            File file = new File(getRealPathFromURI(uriImage));
+            imagePath = file.getPath();
+            report.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.layoutforreportbg));
+            report.setClickable(true);
+            report.setFocusable(true);
+            reportText.setTextColor(Color.WHITE);
+            imageCnt++;
+            camCount.setText(imageCnt+"");
         }
         if(requestCode == REC_VIDEO && resultCode == RESULT_OK) {
             uriVideo = data.getData();
             File file = new File(getRealPathFromURI(uriVideo));
+            videoPath = file.getPath();
+            report.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.layoutforreportbg));
+            report.setClickable(true);
+            report.setFocusable(true);
+            reportText.setTextColor(Color.WHITE);
+            videoCnt++;
+            videoCount.setText(videoCnt+"");
         }
     }
     private void sendImageToStorage(Bitmap bitmap) {

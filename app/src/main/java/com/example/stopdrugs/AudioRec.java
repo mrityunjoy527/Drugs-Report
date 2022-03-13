@@ -2,6 +2,7 @@ package com.example.stopdrugs;
 
 import android.Manifest;
 import android.content.ContextWrapper;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
@@ -11,6 +12,7 @@ import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,6 +35,7 @@ public class AudioRec extends AppCompatActivity {
     public static final int CAP_AUDIO = 102;
     ImageView start, play;
     TextView tvTime;
+    RelativeLayout getBackToReport;
     boolean isRecording = false;
     boolean isPlaying = false;
     MediaRecorder mediaRecorder;
@@ -42,8 +45,10 @@ public class AudioRec extends AppCompatActivity {
     int second;
     int dummySeconds = 0;
     int playableSeconds = 0;
+    int micCnt = 0;
     ExecutorService executorService = Executors.newSingleThreadExecutor();
     Handler handler;
+    Intent intent;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,12 +57,15 @@ public class AudioRec extends AppCompatActivity {
         play = findViewById(R.id.play);
         tvTime = findViewById(R.id.tv_time);
         lavPlaying = findViewById(R.id.lav_playing);
+        getBackToReport = findViewById(R.id.getBackToReport);
         mediaPlayer = new MediaPlayer();
+        intent = getIntent();
+        micCnt = intent.getIntExtra("micCnt", 0);
+        getPermissionForAudio();
 
         start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getPermissionForAudio();
                 if(!isRecording) {
                     isRecording = true;
                     executorService.execute(new Runnable() {
@@ -102,6 +110,8 @@ public class AudioRec extends AppCompatActivity {
                         public void run() {
                             handler.removeCallbacksAndMessages(null);
                             start.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.recording_in_active));
+                            micCnt++;
+                            getBackToReport.setVisibility(View.VISIBLE);
                             lavPlaying.setVisibility(View.GONE);
                             runTimer();
                         }
@@ -142,6 +152,16 @@ public class AudioRec extends AppCompatActivity {
                 }
             }
         });
+        getBackToReport.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(AudioRec.this, MainActivity.class);
+                intent.putExtra("audioPath", path);
+                intent.putExtra("micCnt", micCnt);
+                startActivity(intent);
+                finish();
+            }
+        });
     }
 
     private void runTimer() {
@@ -166,6 +186,7 @@ public class AudioRec extends AppCompatActivity {
                         second = 0;
                         handler.removeCallbacksAndMessages(null);
                         play.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.recording_play));
+                        lavPlaying.setVisibility(View.GONE);
                         return;
                     }
                 }
@@ -183,7 +204,7 @@ public class AudioRec extends AppCompatActivity {
     private String getRecordAudioPath() {
         ContextWrapper contextWrapper = new ContextWrapper(getApplicationContext());
         File musicDirectory = contextWrapper.getExternalFilesDir(Environment.DIRECTORY_MUSIC);
-        File file = new File(musicDirectory, "testRecordingFile"+".mp3");
+        File file = new File(musicDirectory, "voiceRecording"+".mp3");
         return file.getPath();
     }
     @Override
@@ -192,7 +213,6 @@ public class AudioRec extends AppCompatActivity {
         if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             Toast.makeText(getApplicationContext(), "Permission Granted", Toast.LENGTH_SHORT).show();
         }else {
-            getPermissionForAudio();
             Toast.makeText(getApplicationContext(), "Need Recording Permission", Toast.LENGTH_SHORT).show();
         }
     }
