@@ -5,9 +5,11 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.ComponentActivity;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
@@ -18,6 +20,12 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.location.Address;
+import android.location.Criteria;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -43,12 +51,14 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends Activity{
 
     public static final int REC_VIDEO = 100;
     public static final int CHECK_CAM = 101;
-    ImageView camera, video, mic, others;
+    ImageView camera, video, mic,others,getLocation;
     CardView report;
     String imagePath, videoPath;
     String aboutIncident;
@@ -69,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
         video = findViewById(R.id.video);
         mic = findViewById(R.id.mic);
         others = findViewById(R.id.add);
+//        getLocation = findViewById(R.id.layoutForReport);
         report = findViewById(R.id.layoutForReport);
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseFirestore = FirebaseFirestore.getInstance();
@@ -84,7 +95,30 @@ public class MainActivity extends AppCompatActivity {
                 dialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        Toast.makeText(getApplicationContext(), "Report Submitted", Toast.LENGTH_SHORT).show();
+
+                        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+                        if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)
+                                != PackageManager.PERMISSION_GRANTED
+                                && ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                                != PackageManager.PERMISSION_GRANTED) {
+                            return;
+                        }
+                        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 30000, 0, (LocationListener) MainActivity.this);
+                        Criteria criteria = new Criteria();
+                        String bestProvider = locationManager.getBestProvider(criteria, true);
+                        Location location = locationManager.getLastKnownLocation(bestProvider);
+
+                        if (location == null) {
+                            Toast.makeText(getApplicationContext(), "GPS signal not found", Toast.LENGTH_SHORT).show();
+                        }
+                        if (location != null) {
+                            Log.e("locatin", "location--" + location);
+
+                            Log.e("latitude at beginning",
+                                    "@@@@@@@@@@@@@@@" + location.getLatitude());
+                            onLocationChanged(location);
+                        }
+
                     }
                 });
                 dialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -114,6 +148,37 @@ public class MainActivity extends AppCompatActivity {
                 recordVideo();
             }
         });
+    }
+
+
+    // Get Location Data
+    private void onLocationChanged(Location location) {
+
+        Geocoder geocoder;
+        List<Address> addresses;
+        geocoder = new Geocoder(this, Locale.getDefault());
+
+        double latitude = location.getLatitude();
+        double longitude = location.getLongitude();
+
+        Log.e("latitude", "latitude--" + latitude);
+        try {
+            Log.e("latitude", "inside latitude--" + latitude);
+            addresses = geocoder.getFromLocation(latitude, longitude, 1);
+            if (addresses != null && addresses.size() > 0) {
+                String address = addresses.get(0).getAddressLine(0);
+                String city = addresses.get(0).getLocality();
+                String state = addresses.get(0).getAdminArea();
+                String country = addresses.get(0).getCountryName();
+                String postalCode = addresses.get(0).getPostalCode();
+                String knownName = addresses.get(0).getFeatureName();
+//                ro_location.setText(state + " , " + city + " , " + country);
+//                ro_address.setText(address + " , " + knownName + " , " + postalCode);
+            }
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     public Uri getImageUri(Context inContext, Bitmap inImage) {
