@@ -77,12 +77,12 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="75dp"
+                android:layout_marginTop="-10dp"
                 android:text="@string/report"
                 android:textAlignment="center"
+                android:textColor="@color/white"
                 android:textSize="25sp"
-                android:layout_marginTop="-10dp"
-                android:textStyle="bold"
-                android:textColor="@color/white"/>
+                android:textStyle="bold" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
@@ -191,17 +191,20 @@
 
     <RelativeLayout
         android:id="@+id/layoutForTracking"
-        android:layout_width="40dp"
+        android:layout_width="wrap_content"
         android:layout_height="40dp"
         android:layout_margin="15dp"
         android:background="@drawable/layoutforbell">
 
-        <ImageView
-            android:id="@+id/tracking"
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/AdministrationLogin"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_centerVertical="true"
+            android:fontFamily="@font/fredokam2"
             android:padding="10dp"
-            android:src="@drawable/tracking" />
+            android:text="Administration Log In "
+            android:textStyle="bold"
+            android:textColor="@color/black"/>
     </RelativeLayout>
 </RelativeLayout>
